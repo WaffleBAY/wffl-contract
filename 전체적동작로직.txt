@@ -1,0 +1,95 @@
+1. 마켓 생성 (Seller)                                          
+
+  // WaffleFactory.createMarket(mType, ticketPrice, goalAmount,  
+  preparedQuantity, duration)
+  // Lottery: msg.value = 0                                      
+  // Raffle: msg.value >= goalAmount * 15 / 100             
+
+  contract.createMarket(
+    0,                          // mType: 0=LOTTERY, 1=RAFFLE
+    ethers.parseEther("0.01"),  // ticketPrice
+    ethers.parseEther("0.005"), // goalAmount
+    1,                          // preparedQuantity (Lottery는 1)
+    300,                        // duration (초)
+    { value: 0 }               // Lottery는 보증금 없음
+  )
+
+  2. 마켓 오픈 (Seller)
+
+  // 생성된 WaffleMarket 컨트랙트에 직접 호출
+  market.openMarket()
+
+  3. 응모 (Participant)
+
+  // msg.value = ticketPrice + PARTICIPANT_DEPOSIT(0.005 ETH)
+  market.enter(
+    0,                   // _root (WorldID root, 테스트시 0)
+    333,                 // _nullifierHash (WorldID nullifier,
+  유저마다 고유)
+    [0,0,0,0,0,0,0,0],  // _proof (WorldID proof)
+    { value: ethers.parseEther("0.015") }  // ticket(0.01) +
+  deposit(0.005)
+  )
+
+  4. 응모 마감 (Anyone, endTime 이후)
+
+  market.closeEntries()
+
+  5. Commit (Operator, snapshotBlock 이전)
+
+  // 서버에서 secret과 nonce를 생성
+  // commitment = keccak256(abi.encodePacked(secret, nonce))
+  const secret = 12345n
+  const nonce = 67890n
+  const commitment = ethers.solidityPackedKeccak256(
+    ["uint256", "uint256"],
+    [secret, nonce]
+  )
+
+  market.commitSecret(commitment, nonce)
+
+  6. Reveal + 추첨 (Operator, snapshotBlock ~ snapshotBlock+50)
+
+  // 5에서 사용한 secret, nonce 그대로 전달
+  market.revealAndPickWinner(12345, 67890)
+
+  7. 정산 - 당첨자 수령 확인 (Winner)
+
+  // Lottery: prizePool + deposit 돌려받음
+  // Raffle: deposit 돌려받고, seller에게 prizePool +
+  sellerDeposit 전송
+  market.confirmReceipt()
+
+  8. 환불 - 미당첨자 or 실패시 (Non-winner)
+
+  // FAILED: 전액(ticket + deposit) 환불
+  // REVEALED + 미당첨: deposit만 환불
+  market.claimRefund()
+
+  ---
+  조회용 (Read)
+
+  // Factory
+  factory.getMarket(index)        // 마켓 주소 조회
+  factory.getAllMarkets()          // 전체 마켓 목록
+  factory.marketCount()           // 마켓 수
+
+  // Market
+  market.status()                 // 0:CREATED 1:OPEN 2:CLOSED
+  3:COMMITTED 4:REVEALED 5:COMPLETED 6:FAILED
+  market.ticketPrice()
+  market.prizePool()
+  market.endTime()
+  market.getParticipants()
+  market.getWinners()
+  market.participantInfos(address) // (hasEntered, isWinner,
+  paidAmount, depositRefunded)
+  market.snapshotBlock()
+
+  ---
+  핵심 포인트:
+  - 5, 6번(commit/reveal)은 operator만 호출 가능 → 백엔드
+  서버에서 처리
+  - secret은 서버에서만 보관, commitment만 온체인에 올림
+  - snapshotBlock 전에 commit, snapshotBlock ~ snapshotBlock+50
+  사이에 reveal (약 100초 윈도우)
