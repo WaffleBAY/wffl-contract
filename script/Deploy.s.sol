@@ -1,4 +1,4 @@
-// script/DeployFactory.s.sol
+// script/Deploy.s.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
@@ -12,7 +12,11 @@ contract DeployFactoryScript is Script {
         address worldFoundation = vm.envAddress("WORLD_FOUNDATION_ADDRESS");
         address opsWallet = vm.envAddress("OPS_WALLET_ADDRESS");
         address operator = vm.envAddress("OPERATOR_ADDRESS");
+        address wldToken = vm.envAddress("WLD_TOKEN_ADDRESS");
         string memory appId = vm.envString("APP_ID");
+
+        // Permit2 canonical address (same on all chains)
+        address permit2 = 0x000000000022D473030F116dDEE9F6B43aC78BA3;
 
         vm.startBroadcast(deployerPrivateKey);
 
@@ -20,8 +24,10 @@ contract DeployFactoryScript is Script {
             worldIdAddress,
             appId,
             worldFoundation,
-            opsWallet,
-            operator
+            opsWallet,  // treasury (immutable)
+            operator,
+            wldToken,
+            permit2
         );
 
         console.log("WaffleFactory deployed to:", address(factory));
