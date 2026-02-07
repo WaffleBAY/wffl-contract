@@ -144,8 +144,8 @@ contract WaffleMarketTest is Test {
         // 마켓은 생성 시 바로 OPEN 상태
         vm.stopPrank();
 
-        // 유저 참여 (ticket + PARTICIPANT_DEPOSIT = 10 + 5 = 15 WLD)
-        uint256 entryAmount = ticket + 5 * 1e18; // ticket + PARTICIPANT_DEPOSIT
+        // 유저 참여 (ticket + PARTICIPANT_DEPOSIT = 10 + 0.005 = 10.005 WLD)
+        uint256 entryAmount = ticket + 5 * 1e15; // ticket + PARTICIPANT_DEPOSIT
         vm.prank(user1);
         market.enter(1, 111, EMPTY_PROOF, entryAmount, 0, block.timestamp + 1 hours, "");
 
@@ -183,7 +183,7 @@ contract WaffleMarketTest is Test {
         market = WaffleMarket(marketAddr);
         vm.stopPrank();
 
-        uint256 entryAmount = ticket + 5 * 1e18;
+        uint256 entryAmount = ticket + 5 * 1e15;
 
         // 2명 참여 (quantity=1이므로 추첨 필요)
         vm.prank(user1);
@@ -227,7 +227,7 @@ contract WaffleMarketTest is Test {
         market = WaffleMarket(marketAddr);
         vm.stopPrank();
 
-        uint256 entryAmount = ticket + 5 * 1e18;
+        uint256 entryAmount = ticket + 5 * 1e15;
 
         vm.prank(user1);
         market.enter(1, 111, EMPTY_PROOF, entryAmount, 0, block.timestamp + 1 hours, "");
@@ -258,7 +258,7 @@ contract WaffleMarketTest is Test {
         market = WaffleMarket(marketAddr);
         vm.stopPrank();
 
-        uint256 entryAmount = ticket + 5 * 1e18;
+        uint256 entryAmount = ticket + 5 * 1e15;
 
         vm.prank(user1);
         market.enter(1, 111, EMPTY_PROOF, entryAmount, 0, block.timestamp + 1 hours, "");
@@ -288,7 +288,7 @@ contract WaffleMarketTest is Test {
         market = WaffleMarket(marketAddr);
         vm.stopPrank();
 
-        uint256 entryAmount = ticket + 5 * 1e18;
+        uint256 entryAmount = ticket + 5 * 1e15;
 
         vm.prank(user1);
         market.enter(1, 111, EMPTY_PROOF, entryAmount, 0, block.timestamp + 1 hours, "");
@@ -318,7 +318,7 @@ contract WaffleMarketTest is Test {
         market = WaffleMarket(marketAddr);
         vm.stopPrank();
 
-        uint256 entryAmount = ticket + 5 * 1e18;
+        uint256 entryAmount = ticket + 5 * 1e15;
 
         vm.prank(user1);
         market.enter(1, 111, EMPTY_PROOF, entryAmount, 0, block.timestamp + 1 hours, "");
@@ -346,7 +346,7 @@ contract WaffleMarketTest is Test {
         market = WaffleMarket(marketAddr);
         vm.stopPrank();
 
-        uint256 entryAmount = ticket + 5 * 1e18;
+        uint256 entryAmount = ticket + 5 * 1e15;
 
         vm.prank(user1);
         market.enter(1, 111, EMPTY_PROOF, entryAmount, 0, block.timestamp + 1 hours, "");
@@ -372,7 +372,7 @@ contract WaffleMarketTest is Test {
         market = WaffleMarket(marketAddr);
         vm.stopPrank();
 
-        uint256 entryAmount = ticket + 5 * 1e18;
+        uint256 entryAmount = ticket + 5 * 1e15;
 
         vm.prank(user1);
         market.enter(1, 111, EMPTY_PROOF, entryAmount, 0, block.timestamp + 1 hours, "");

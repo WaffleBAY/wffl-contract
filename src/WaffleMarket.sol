@@ -28,7 +28,7 @@ contract WaffleMarket is ReentrancyGuard {
 
     // ━━━━━━━━━━━━━━━ 경제 모델 ━━━━━━━━━━━━━━━
     uint256 public ticketPrice;
-    uint256 public constant PARTICIPANT_DEPOSIT = 5 * 1e18; // 5 WLD
+    uint256 public constant PARTICIPANT_DEPOSIT = 5 * 1e15; // 0.005 WLD
     uint256 public sellerDeposit;       // 판매자 보증금 (LOTTERY/RAFFLE 모두, goalAmount × 15%)
     uint256 public prizePool;           // 티켓 가격의 95% 누적
 
