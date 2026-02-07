@@ -418,7 +418,15 @@ contract WaffleMarket is ReentrancyGuard {
     // 환불 / 보증금 반환
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     function claimRefund() external nonReentrant {
-        WaffleLib.ParticipantInfo storage info = participantInfos[msg.sender];
+        _claimRefundFor(msg.sender);
+    }
+
+    function claimRefundViaFactory(address _participant) external onlyFactory nonReentrant {
+        _claimRefundFor(_participant);
+    }
+
+    function _claimRefundFor(address _participant) internal {
+        WaffleLib.ParticipantInfo storage info = participantInfos[_participant];
 
         if (!info.hasEntered || info.depositRefunded)
             revert WaffleLib.Unauthorized();
@@ -436,7 +444,7 @@ contract WaffleMarket is ReentrancyGuard {
         if (refundAmount == 0) revert WaffleLib.InsufficientFunds();
 
         info.depositRefunded = true;
-        _safeTransferWLD(msg.sender, refundAmount);
+        _safeTransferWLD(_participant, refundAmount);
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

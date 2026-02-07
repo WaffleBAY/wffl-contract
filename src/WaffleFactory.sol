@@ -188,6 +188,14 @@ contract WaffleFactory is Ownable {
         WaffleMarket(_market).closeDrawAndSettle();
     }
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // 보증금 환불 프록시 (MiniKit은 Factory만 허용)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    function claimRefund(address _market) external {
+        require(isMarket[_market], "Not a valid market");
+        WaffleMarket(_market).claimRefundViaFactory(msg.sender);
+    }
+
     // 조회 함수들
     function getMarketCount() external view returns (uint256) {
         return markets.length;
